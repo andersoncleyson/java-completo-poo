@@ -1,5 +1,7 @@
 package ExcecaoPersonalizada.model.entities;
 
+import ExcecaoPersonalizada.model.exceptions.DomainException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +16,10 @@ public class Reservation {
     public Reservation(){}
 
     public Reservation(Integer roomNumber, Date checkIn, Date checkOut){
+        if(!checkOut.after(checkIn)) {
+            throw new DomainException("Check-out date must be after check0in date");
+        }
+
         this.roomNumber = roomNumber;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -45,10 +51,10 @@ public class Reservation {
 
         Date now = new Date();
         if(checkIn.before(now) || checkOut.before(now)){
-            return "Reservation dates for update must be future dates";
+            throw new DomainException("Reservation dates for update must be future dates");
         }
         if(!checkOut.after(checkIn)) {
-            return "Check-out date must be after check-in date";
+            throw new DomainException("Check-out date must be after check0in date");
         }
 
         this.checkIn = checkIn;
